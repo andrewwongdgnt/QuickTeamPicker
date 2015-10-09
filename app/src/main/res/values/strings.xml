@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">Quick Team Picker</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <!-- Main -->
+    <string name="quickStart">Quick Start</string>
+    <string name="fullStart">Full Start</string>
+    <string name="manage">Manage</string>
+    <string name="load">Load</string>
+
+    <string name="help">Help</string>
+    <string name="about">About</string>
+    <string name="reset">Reset</string>
 </resources>
