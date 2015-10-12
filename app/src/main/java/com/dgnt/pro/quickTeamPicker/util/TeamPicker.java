@@ -25,12 +25,12 @@ public class TeamPicker {
             int start = 0;
             int teamNumber = 1;
             for (int d : dividers) {
-                teamList.add(new Team("team "+teamNumber, personList.subList(start, d)));
+                teamList.add(new Team(teamNumber, "team "+teamNumber, personList.subList(start, d)));
                 start = d;
                 teamNumber++;
             }
             ;
-            teamList.add(new Team("team " + teamNumber,  personList.subList(start, personList.size())));
+            teamList.add(new Team(teamNumber, "team " + teamNumber,  personList.subList(start, personList.size())));
 
 
         }

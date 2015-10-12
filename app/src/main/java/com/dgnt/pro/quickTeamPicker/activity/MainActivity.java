@@ -35,10 +35,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         List<Person> personList = new ArrayList<>();
-        personList.add(new Person("Andrew",4));
-        personList.add(new Person("Andrew2",3));
-        personList.add(new Person("Andrew3",2));
-        personList.add(new Person("Andrew4",1));
+        personList.add(new Person(1,"Andrew",4,1));
+        personList.add(new Person(2,"Andrew2",3,1));
+        personList.add(new Person(3,"Andrew3",2,1));
+        personList.add(new Person(4,"Andrew4",1,1));
 
         List<Team> teams = TeamPicker.pickTeams(personList, 2, true);
 
