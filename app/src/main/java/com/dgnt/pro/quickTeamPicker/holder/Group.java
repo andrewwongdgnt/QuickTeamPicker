@@ -3,21 +3,25 @@ package com.dgnt.pro.quickTeamPicker.holder;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.dgnt.pro.quickTeamPicker.util.KeyableUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Andrew on 10/7/2015.
  */
-public class Group implements Parcelable, IKeyable {
+public class Group implements Parcelable {
+    protected long id;
     protected String name;
     protected List<Person> personList;
 
-    public Group(final String name, final List<Person> personList) {
+    public Group(final long id, final String name, final List<Person> personList) {
+        this.id = id;
         this.name = name;
         this.personList = personList;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getName() {
@@ -36,17 +40,25 @@ public class Group implements Parcelable, IKeyable {
         this.personList = personList;
     }
 
-    public boolean addPerson(Person person) {
-        return KeyableUtil.addToList(personList,person);
+    public boolean addPerson(final Person personToAdd) {
+        for (final Person person : personList) {
+            if (person.getId() == personToAdd.getId())
+                return false;
+        }
+        personList.add(personToAdd);
+        return true;
     }
 
-    public boolean removePerson(Person person) {
-        return KeyableUtil.removeFromList(personList, person);
+    public boolean removePerson(final Person personToRemove) {
+        for (int i = personList.size() - 1; i >= 0; i--) {
+            if (personList.get(i).getId() == personToRemove.getId()) {
+                personList.remove(i);
+                return true;
+            }
+        }
+        return false;
     }
 
-    public String getKey(){
-        return getName();
-    }
 
     protected Group(Parcel in) {
         name = in.readString();

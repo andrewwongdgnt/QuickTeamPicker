@@ -1,6 +1,5 @@
 package com.dgnt.pro.quickTeamPicker.activity;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -50,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 new MainItem(getResources().getString(R.string.manage), R.drawable.place_holder),
                 new MainItem(getResources().getString(R.string.load), R.drawable.place_holder)
         };
-        ArrayAdapter<MainItem> adapter = new ArrayAdapter<MainItem>(this, R.layout.main_list_item, mainItems) {
+        ArrayAdapter<MainItem> adapter = new ArrayAdapter<MainItem>(this, R.layout.list_item_main, mainItems) {
             @Override
             public View getView(int position, View convertView,
                                 ViewGroup parent) {
@@ -60,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 if (view == null) {
                     LayoutInflater vi;
                     vi = LayoutInflater.from(getContext());
-                    view = vi.inflate(R.layout.main_list_item, null);
+                    view = vi.inflate(R.layout.list_item_main, null);
                 }
 
                 TextView textView = (TextView) view.findViewById(R.id.mainItem_tv);

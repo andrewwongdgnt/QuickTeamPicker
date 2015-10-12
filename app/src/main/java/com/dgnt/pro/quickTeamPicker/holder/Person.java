@@ -7,13 +7,22 @@ import android.os.Parcelable;
  * Created by Andrew on 10/7/2015.
  * used http://www.parcelabler.com/ to make this class parcelable
  */
-public class Person implements Parcelable, IKeyable {
+public class Person implements Parcelable {
+
+    private long id;
     private String name;
     private int skill;
+    private long groupId;
 
-    public Person (final String name, final int skill){
+    public Person ( final long id, final String name, final int skill, final long groupId){
+        this.id = id;
         this.name = name;
         this.skill = skill;
+        this.groupId = groupId;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getName() {
@@ -32,13 +41,19 @@ public class Person implements Parcelable, IKeyable {
         this.skill = skill;
     }
 
-    public String getKey(){
-        return getName();
+    public long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(long groupId) {
+        this.groupId = groupId;
     }
 
     protected Person(Parcel in) {
+        id = in.readLong();
         name = in.readString();
         skill = in.readInt();
+        groupId = in.readLong();
     }
 
     @Override
@@ -48,8 +63,11 @@ public class Person implements Parcelable, IKeyable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+
+        dest.writeLong(id);
         dest.writeString(name);
         dest.writeInt(skill);
+        dest.writeLong(groupId);
     }
 
     @SuppressWarnings("unused")

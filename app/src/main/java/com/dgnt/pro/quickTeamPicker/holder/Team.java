@@ -3,19 +3,23 @@ package com.dgnt.pro.quickTeamPicker.holder;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Andrew on 10/7/2015.
  */
-public class Team extends Group implements Parcelable,IKeyable {
+public class Team extends Group implements Parcelable {
 
     private boolean dirty;
     private int skillSum;
 
-    public Team(final String name, final List<Person> personList ){
-        super(name,personList);
+    public Team(final long id, final String name, final List<Person> personList ){
+        super(id, name,personList);
         dirty=true;
     }
 
@@ -30,13 +34,13 @@ public class Team extends Group implements Parcelable,IKeyable {
     }
 
     public boolean addPerson(Person person) {
-        dirty=true;
-        return super.addPerson(person);
+        dirty=super.addPerson(person);
+        return dirty;
     }
 
     public boolean removePerson(Person person) {
-        dirty=true;
-        return super.removePerson(person);
+        dirty=super.removePerson(person);
+        return dirty;
     }
 
     public int getSkillSum(){
@@ -49,6 +53,8 @@ public class Team extends Group implements Parcelable,IKeyable {
         }
         return skillSum;
     }
+
+
 
     protected Team(Parcel in) {
         super(in);
