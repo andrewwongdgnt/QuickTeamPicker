@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/nav_managePlayers" android:icon="@android:drawable/ic_menu_agenda"
+            android:title="@string/title_activity_manage_players" />
+        <item android:id="@+id/nav_loadSession" android:icon="@android:drawable/ic_menu_save"
+            android:title="@string/title_activity_load_session" />
+        <item android:id="@+id/nav_about" android:icon="@android:drawable/ic_menu_help"
+            android:title="Share" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item android:id="@+id/nav_send" android:icon="@android:drawable/ic_menu_send"
+                android:title="Send" />
+        </menu>
+    </item>
+
+</menu>

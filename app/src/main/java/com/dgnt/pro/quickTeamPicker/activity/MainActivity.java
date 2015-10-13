@@ -1,152 +1,100 @@
 package com.dgnt.pro.quickTeamPicker.activity;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.dgnt.pro.quickTeamPicker.R;
-import com.dgnt.pro.quickTeamPicker.holder.Person;
-import com.dgnt.pro.quickTeamPicker.holder.Team;
-import com.dgnt.pro.quickTeamPicker.util.TeamPicker;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
-
-
-        List<Person> personList = new ArrayList<>();
-        personList.add(new Person(1,"Andrew",4,1));
-        personList.add(new Person(2,"Andrew2",3,1));
-        personList.add(new Person(3,"Andrew3",2,1));
-        personList.add(new Person(4,"Andrew4",1,1));
-
-        List<Team> teams = TeamPicker.pickTeams(personList, 2, true);
-
-
-        final MainItem[] mainItems = new MainItem[]{
-                new MainItem(getResources().getString(R.string.quickStart), R.drawable.place_holder),
-                new MainItem(getResources().getString(R.string.fullStart), R.drawable.place_holder),
-                new MainItem(getResources().getString(R.string.manage), R.drawable.place_holder),
-                new MainItem(getResources().getString(R.string.load), R.drawable.place_holder)
-        };
-        ArrayAdapter<MainItem> adapter = new ArrayAdapter<MainItem>(this, R.layout.list_item_main, mainItems) {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public View getView(int position, View convertView,
-                                ViewGroup parent) {
-
-                View view = convertView;
-
-                if (view == null) {
-                    LayoutInflater vi;
-                    vi = LayoutInflater.from(getContext());
-                    view = vi.inflate(R.layout.list_item_main, null);
-                }
-
-                TextView textView = (TextView) view.findViewById(R.id.mainItem_tv);
-                ImageView imageView = (ImageView) view.findViewById(R.id.mainItem_iv);
-
-                textView.setText(getItem(position).getTitle());
-                imageView.setImageResource(getItem(position).getImageId());
-
-                return view;
-            }
-        };
-        final GridView main_gridView = (GridView) findViewById(R.id.main_gridView);
-        main_gridView.setAdapter(adapter);
-        main_gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-//                        startActivity(new Intent(getApplicationContext(), ChooseTemplateActivity.class));
-
-                        break;
-                    case 1:
-                    default:
-//                        startActivity(new Intent(getApplicationContext(), ChooseContractActivity.class));
-
-                        break;
-                }
-
-
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
         });
 
-        ViewTreeObserver vto = main_gridView.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                main_gridView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
 
-                int maxHeight = 0;
-                final int size = main_gridView.getChildCount();
-                for (int i = 0; i < size; i++) {
-                    ViewGroup gridChild = (ViewGroup) main_gridView.getChildAt(i);
-                    maxHeight = gridChild.getHeight() > maxHeight ? gridChild.getHeight() : maxHeight;
-                }
-                ViewGroup.LayoutParams layoutParams = main_gridView.getLayoutParams();
-                layoutParams.height = maxHeight*2;
-                main_gridView.setLayoutParams(layoutParams);
-            }
-        });
-
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.main, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        if (id == R.id.nav_managePlayers) {
+            startActivity(new Intent(this, ManagePlayersActivity.class));
+        } else if (id == R.id.nav_loadSession) {
+            startActivity(new Intent(this, LoadSessionActivity.class));
 
+        } else if (id == R.id.nav_about) {
 
-        return super.onOptionsItemSelected(item);
-    }
+        } else if (id == R.id.nav_send) {
 
-    private static class MainItem {
-        private String title;
-        private int imageId;
-
-        public MainItem(final String title, final int imageId) {
-            this.title = title;
-            this.imageId = imageId;
         }
 
-        public String getTitle() {
-            return title;
-        }
-
-        public int getImageId() {
-            return imageId;
-        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }
