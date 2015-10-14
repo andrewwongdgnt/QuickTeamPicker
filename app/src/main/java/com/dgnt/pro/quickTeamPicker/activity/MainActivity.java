@@ -88,8 +88,11 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(this, LoadSessionActivity.class));
 
         } else if (id == R.id.nav_about) {
+            startActivity(new Intent(this, AboutActivity.class));
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_email) {
+
+        }else if (id == R.id.nav_rate) {
 
         }
 

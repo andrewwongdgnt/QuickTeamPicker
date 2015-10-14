@@ -7,18 +7,25 @@
     <string name="manage">Manage</string>
     <string name="load">Load</string>
 
-    <string name="help">Help</string>
     <string name="about">About</string>
-    <string name="reset">Reset</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="communicate">Communicate</string>
+    <string name="emailMe">Email me</string>
+    <string name="rate">Rate</string>
 
-    <string name="action_settings">Settings</string>
+
+    <!-- Manage -->
     <string name="title_activity_manage_players">Manage Players</string>
 
-    <!-- Load -->
-    <string name="emptySession_msg">No sessions found.</string>
 
     <string name="title_activity_load_session">Load a session</string>
+    <string name="emptySession_msg">No sessions found.</string>
+
+
+    <!-- About -->
+    <string name="title_activity_about">About</string>
+    <string name="aboutMsg">Thank you for using this app\n\n
+Ever wanted to play a game with your group of friends but can never decide how to split yourselves up into teams? Quick Team Picker strives to take away that hassle by dividing your group of friends into teams for you\n\n
+Now I know what you\'re thinking, &quot;I have lots of friends and I don\'t want to add all their names into the app just to play a quick game.&quot; </string>
+
 </resources>

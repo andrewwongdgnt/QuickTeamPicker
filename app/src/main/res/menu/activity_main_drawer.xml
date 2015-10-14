@@ -7,13 +7,16 @@
         <item android:id="@+id/nav_loadSession" android:icon="@android:drawable/ic_menu_save"
             android:title="@string/title_activity_load_session" />
         <item android:id="@+id/nav_about" android:icon="@android:drawable/ic_menu_help"
-            android:title="Share" />
+            android:title="@string/title_activity_about" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="@string/communicate">
         <menu>
-            <item android:id="@+id/nav_send" android:icon="@android:drawable/ic_menu_send"
-                android:title="Send" />
+            <item android:id="@+id/nav_email" android:icon="@android:drawable/ic_dialog_email"
+                android:title="@string/emailMe" />
+
+            <item android:id="@+id/nav_rate" android:icon="@android:drawable/btn_star_big_on"
+                android:title="@string/rate" />
         </menu>
     </item>
 

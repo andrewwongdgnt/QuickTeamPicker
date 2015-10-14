@@ -29,7 +29,20 @@
         <activity
             android:name=".activity.LoadSessionActivity"
             android:label="@string/title_activity_load_session"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/AppTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.dgnt.pro.quickTeamPicker.activity.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activity.AboutActivity"
+            android:label="@string/title_activity_about"
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.dgnt.pro.quickTeamPicker.activity.MainActivity" />
         </activity>
     </application>
 
