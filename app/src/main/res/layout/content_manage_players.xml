@@ -1,13 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/activity_manage_players"
-    tools:context="com.dgnt.pro.quickTeamPicker.activity.ManagePlayersActivity">
+    tools:context="com.dgnt.pro.quickTeamPicker.activity.ManagePlayersActivity"
+    tools:showIn="@layout/activity_manage_players">
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/noPlayersMsg_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/noPlayersMsg"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/message"
+        android:textStyle="italic" />
+
+    <ExpandableListView
+        android:id="@+id/players_elv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/list_view_bottom_padding"
+        android:scrollbarStyle="outsideOverlay" />
+
+</LinearLayout>

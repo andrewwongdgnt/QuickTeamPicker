@@ -3,11 +3,6 @@ package com.dgnt.pro.quickTeamPicker.holder;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,35 +13,35 @@ public class Team extends Group implements Parcelable {
     private boolean dirty;
     private int skillSum;
 
-    public Team(final long id, final String name, final List<Person> personList ){
-        super(id, name,personList);
+    public Team(final String name, final List<Player> playerList){
+        super(name, playerList);
         dirty=true;
     }
 
-    public List<Person> getPersonList() {
+    public List<Player> getPlayerList() {
         dirty=true;
-        return super.getPersonList();
+        return super.getPlayerList();
     }
 
-    public void setPersonList(List<Person> personList) {
+    public void setPlayerList(List<Player> playerList) {
         dirty=true;
-        super.setPersonList(personList);
+        super.setPlayerList(playerList);
     }
 
-    public boolean addPerson(Person person) {
-        dirty=super.addPerson(person);
+    public boolean addPlayer(Player player) {
+        dirty=super.addPlayer(player);
         return dirty;
     }
 
-    public boolean removePerson(Person person) {
-        dirty=super.removePerson(person);
+    public boolean removePlayer(Player player) {
+        dirty=super.removePlayer(player);
         return dirty;
     }
 
     public int getSkillSum(){
         if (dirty){
             skillSum =0;
-            for (Person p : getPersonList()){
+            for (Player p : getPlayerList()){
                 skillSum += p.getSkill();
             }
             dirty=false;

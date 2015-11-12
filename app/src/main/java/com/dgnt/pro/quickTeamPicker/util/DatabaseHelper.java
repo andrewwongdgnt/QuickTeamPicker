@@ -3,11 +3,13 @@ package com.dgnt.pro.quickTeamPicker.util;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.dgnt.pro.quickTeamPicker.holder.Group;
-import com.dgnt.pro.quickTeamPicker.holder.Person;
+import com.dgnt.pro.quickTeamPicker.holder.Player;
 import com.dgnt.pro.quickTeamPicker.holder.Session;
 
 import java.util.ArrayList;
@@ -20,17 +22,15 @@ import java.util.Map;
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 9;
     private static final String DATABASE_NAME = "db";
 
-    private static final String PERSON_TABLE = "personTable";
-    private static final String PERSON_COLUMN_ID = "id";
-    private static final String PERSON_COLUMN_NAME = "name";
-    private static final String PERSON_COLUMN_SKILL = "skill";
-    private static final String PERSON_COLUMN_GROUP_ID = "groupId";
+    private static final String PLAYER_TABLE = "playerTable";
+    private static final String PLAYER_COLUMN_NAME = "name";
+    private static final String PLAYER_COLUMN_SKILL = "skill";
+    private static final String PLAYER_COLUMN_GROUP_ID = "groupId";
 
     private static final String GROUP_TABLE = "groupTable";
-    private static final String GROUP_COLUMN_ID = "id";
     private static final String GROUP_COLUMN_NAME = "name";
 
     private static final String SESSION_TABLE = "sessionTable";
@@ -40,6 +40,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String SESSION_COLUMN_TIME_CREATED = "timeCreated";
     private static final String SESSION_COLUMN_TIME_MODIFIED = "timeModified";
 
+    //Status
+    public enum Status {
+        SUCCESS, CONSTRAINT, FAIL
+    }
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -47,20 +51,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void onCreate(SQLiteDatabase db) {
 
-        //Create Person Table
-        final String createPersonTableQuery = "CREATE TABLE " + PERSON_TABLE + "(" +
-                PERSON_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                PERSON_COLUMN_NAME + " TEXT, " +
-                PERSON_COLUMN_SKILL + " INTEGER, " +
-                PERSON_COLUMN_GROUP_ID + " TEXT " +
+        //Create Player Table
+        final String createPlayerTableQuery = "CREATE TABLE " + PLAYER_TABLE + "(" +
+                PLAYER_COLUMN_NAME + " TEXT PRIMARY KEY, " +
+                PLAYER_COLUMN_SKILL + " INTEGER, " +
+                PLAYER_COLUMN_GROUP_ID + " TEXT " +
                 ")";
 
-        db.execSQL(createPersonTableQuery);
+        db.execSQL(createPlayerTableQuery);
 
         //Create Group Table
         final String createGroupTableQuery = "CREATE TABLE " + GROUP_TABLE + "(" +
-                GROUP_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                GROUP_COLUMN_NAME + " TEXT " +
+                GROUP_COLUMN_NAME + " TEXT PRIMARY KEY" +
                 ")";
 
         db.execSQL(createGroupTableQuery);
@@ -80,7 +82,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldversion, int newversion) {
-        db.execSQL("DROP TABLE IF EXISTS " + PERSON_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + PLAYER_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + GROUP_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + SESSION_TABLE);
 
@@ -88,77 +90,94 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //------------------
-    // Person
+    // Player
     //------------------
 
-    public long addPerson(final String name, final int skill, final int groupId) {
+    public Status addPlayer(final String name, final int skill, final String groupId) {
+
+        addGroup(groupId);
 
         final SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values;
 
-        //Inserting Person
+        //Inserting Player
         values = new ContentValues();
-        values.put(PERSON_COLUMN_NAME, name);
-        values.put(PERSON_COLUMN_SKILL, skill);
-        values.put(PERSON_COLUMN_GROUP_ID, groupId);
+        values.put(PLAYER_COLUMN_NAME, name);
+        values.put(PLAYER_COLUMN_SKILL, skill);
+        values.put(PLAYER_COLUMN_GROUP_ID, groupId);
+        try {
+            db.insertOrThrow(PLAYER_TABLE, null, values);
+            return Status.SUCCESS;
+        } catch (SQLiteConstraintException e) {
+            return Status.CONSTRAINT;
+        } catch (SQLiteException e) {
+            return Status.FAIL;
+        } finally {
+            db.close(); // Closing database connection
 
-        final long personId = db.insert(PERSON_TABLE, null, values);
-
-        db.close(); // Closing database connection
-
-        return personId;
+        }
     }
 
-    public void updatePerson(final long id, final String name, final int skill, final int groupId) {
+    public Status updatePlayer(final String oldName, final String name, final int skill, final String groupId) {
 
         final SQLiteDatabase db = this.getWritableDatabase();
 
         final ContentValues values = new ContentValues();
-        values.put(PERSON_COLUMN_NAME, name);
-        values.put(PERSON_COLUMN_SKILL, skill);
-        values.put(PERSON_COLUMN_GROUP_ID, groupId);
+        values.put(PLAYER_COLUMN_NAME, name);
+        values.put(PLAYER_COLUMN_SKILL, skill);
+        values.put(PLAYER_COLUMN_GROUP_ID, groupId);
 
 
         // updating row
-        db.update(PERSON_TABLE, values, PERSON_COLUMN_ID + " = ?",
-                new String[]{String.valueOf(id)});
-        db.close();
+        try {
+            db.update(PLAYER_TABLE, values, PLAYER_COLUMN_NAME + " = ?",
+                    new String[]{oldName});
+            return Status.SUCCESS;
+        } catch (SQLiteException e) {
+            return Status.FAIL;
+        } finally {
+            db.close();
+        }
     }
 
-    public void deletePerson(final long id) {
+    public Status deletePlayer(final String name) {
         final SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(PERSON_TABLE, PERSON_COLUMN_ID + " = ?",
-                new String[]{String.valueOf(id)});
-        db.close();
+        try {
+            db.delete(PLAYER_TABLE, PLAYER_COLUMN_NAME + " = ?",
+                    new String[]{name});
+            return Status.SUCCESS;
+        } catch (SQLiteException e) {
+            return Status.FAIL;
+        } finally {
+            db.close();
+        }
     }
 
-    public Person getPerson(final long id) {
+    public Player getPlayer(final String name) {
         final SQLiteDatabase db = this.getReadableDatabase();
 
-        final Cursor cursor = db.query(PERSON_TABLE, new String[]{
-                        PERSON_COLUMN_NAME,
-                        PERSON_COLUMN_SKILL,
-                        PERSON_COLUMN_GROUP_ID
-                }, PERSON_COLUMN_ID + "=?",
-                new String[]{String.valueOf(id)}, null, null, null, null);
+        final Cursor cursor = db.query(PLAYER_TABLE, new String[]{
+                        PLAYER_COLUMN_SKILL,
+                        PLAYER_COLUMN_GROUP_ID
+                }, PLAYER_COLUMN_NAME + "=?",
+                new String[]{name}, null, null, null, null);
 
-        Person person = null;
+        Player player = null;
 
         if (cursor != null && cursor.moveToFirst()) {
 
-            final String name = cursor.getString(cursor.getColumnIndex(PERSON_COLUMN_NAME));
-            final int skill = cursor.getInt(cursor.getColumnIndex(PERSON_COLUMN_SKILL));
-            final long groupId = cursor.getLong(cursor.getColumnIndex(PERSON_COLUMN_GROUP_ID));
+            final int skill = cursor.getInt(cursor.getColumnIndex(PLAYER_COLUMN_SKILL));
+            final String groupId = cursor.getString(cursor.getColumnIndex(PLAYER_COLUMN_GROUP_ID));
 
 
-            person = new Person(id, name, skill, groupId);
+            player = new Player(name, skill, groupId);
         }
 
         cursor.close();
         db.close();
 
-        return person;
+        return player;
 
     }
 
@@ -166,7 +185,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //------------------
     // Groups
     //------------------
-    public long addGroup(final String name) {
+    public Status addGroup(final String name) {
 
         final SQLiteDatabase db = this.getWritableDatabase();
 
@@ -175,15 +194,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //Insert into group
         values = new ContentValues();
         values.put(GROUP_COLUMN_NAME, name);
+        try {
+            db.insertOrThrow(GROUP_TABLE, null, values);
+            return Status.SUCCESS;
+        } catch (SQLiteConstraintException e) {
+            return Status.CONSTRAINT;
+        } catch (SQLiteException e) {
+            return Status.FAIL;
+        } finally {
+            db.close(); // Closing database connection
 
-        long id = db.insert(GROUP_TABLE, null, values);
+        }
 
-        db.close(); // Closing database connection
 
-        return id;
     }
 
-    public void updateGroup(final long id, final String name) {
+    public Status updateGroup(final String oldName, final String name) {
 
         final SQLiteDatabase db = this.getWritableDatabase();
 
@@ -191,16 +217,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(GROUP_COLUMN_NAME, name);
 
         // updating row
-        db.update(GROUP_TABLE, values, GROUP_COLUMN_ID + " = ?",
-                new String[]{String.valueOf(id)});
-        db.close();
+        try {
+            db.update(GROUP_TABLE, values, GROUP_COLUMN_NAME + " = ?",
+                    new String[]{oldName});
+            return Status.SUCCESS;
+        } catch (SQLiteException e) {
+            return Status.FAIL;
+        } finally {
+            db.close();
+        }
     }
 
-    public void deleteGroup(final long id) {
+    public Status deleteGroup(final String oldName) {
         final SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(GROUP_TABLE, GROUP_COLUMN_ID + " = ?",
-                new String[]{String.valueOf(id)});
-        db.close();
+        try {
+            db.delete(GROUP_TABLE, GROUP_COLUMN_NAME + " = ?",
+                    new String[]{oldName});
+            return Status.SUCCESS;
+        } catch (SQLiteException e) {
+            return Status.FAIL;
+        } finally {
+            db.close();
+        }
     }
 
     public List<Group> getAllGroups() {
@@ -208,34 +246,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         final SQLiteDatabase db = this.getReadableDatabase();
 
-        final Map<Long, List<Person>> groupMap = new HashMap<>();
+        final Map<String, List<Player>> groupMap = new HashMap<>();
 
-        final Cursor cursor = db.query(PERSON_TABLE, new String[]{
-                        PERSON_COLUMN_ID,
-                        PERSON_COLUMN_NAME,
-                        PERSON_COLUMN_SKILL,
-                        PERSON_COLUMN_GROUP_ID
+        final Cursor cursor = db.query(PLAYER_TABLE, new String[]{
+                        PLAYER_COLUMN_NAME,
+                        PLAYER_COLUMN_SKILL,
+                        PLAYER_COLUMN_GROUP_ID
                 }, null,
-                null, null, null, PERSON_COLUMN_NAME + " ASC");
+                null, null, null, PLAYER_COLUMN_NAME + " ASC");
 
 
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
                 try {
-                    final long id = cursor.getLong(cursor.getColumnIndex(PERSON_COLUMN_ID));
-                    final String name = cursor.getString(cursor.getColumnIndex(PERSON_COLUMN_NAME));
-                    final int skill = cursor.getInt(cursor.getColumnIndex(PERSON_COLUMN_SKILL));
-                    final long groupId = cursor.getLong(cursor.getColumnIndex(PERSON_COLUMN_GROUP_ID));
+                    final String name = cursor.getString(cursor.getColumnIndex(PLAYER_COLUMN_NAME));
+                    final int skill = cursor.getInt(cursor.getColumnIndex(PLAYER_COLUMN_SKILL));
+                    final String groupId = cursor.getString(cursor.getColumnIndex(PLAYER_COLUMN_GROUP_ID));
 
 
-                    final Person person = new Person(id, name, skill, groupId);
+                    final Player player = new Player(name, skill, groupId);
 
                     if (!groupMap.containsKey(groupId))
-                        groupMap.put(groupId, new ArrayList<Person>());
+                        groupMap.put(groupId, new ArrayList<Player>());
 
-                    final List<Person> personList = groupMap.get(groupId);
-                    personList.add(person);
+                    final List<Player> playerList = groupMap.get(groupId);
+                    playerList.add(player);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -243,7 +279,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         final Cursor cursor2 = db.query(GROUP_TABLE, new String[]{
-                        GROUP_COLUMN_ID,
                         GROUP_COLUMN_NAME
                 }, null,
                 null, null, null, GROUP_COLUMN_NAME + " ASC");
@@ -251,10 +286,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor2.moveToFirst()) {
             do {
                 try {
-                    final long id = cursor2.getLong(cursor2.getColumnIndex(GROUP_COLUMN_ID));
                     final String name = cursor2.getString(cursor2.getColumnIndex(GROUP_COLUMN_NAME));
 
-                    final Group group = new Group(id, name, groupMap.get(id));
+                    final Group group = new Group(name, groupMap.get(name));
 
                     groupList.add(group);
                 } catch (Exception e) {
@@ -287,13 +321,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(SESSION_COLUMN_TIME_MODIFIED, timeModified);
 
         // Inserting Row
-        long id = db.insert(SESSION_TABLE, null, values);
-        db.close(); // Closing database connection
+        try {
+            long id = db.insert(SESSION_TABLE, null, values);
 
-        return id;
+            return id;
+        } finally {
+            db.close();
+        }
     }
 
-    public void updateSession(final long id, final String name, final String serializedTeamMates, final long timeCreated, final long timeModified) {
+    public Status updateSession(final long id, final String name, final String serializedTeamMates, final long timeCreated, final long timeModified) {
 
         final SQLiteDatabase db = this.getWritableDatabase();
 
@@ -305,16 +342,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         // updating row
-        db.update(SESSION_TABLE, values, SESSION_COLUMN_ID + " = ?",
-                new String[]{String.valueOf(id)});
-        db.close();
+        try {
+            db.update(SESSION_TABLE, values, SESSION_COLUMN_ID + " = ?",
+                    new String[]{String.valueOf(id)});
+            return Status.SUCCESS;
+        } catch (SQLiteException e) {
+            return Status.FAIL;
+        } finally {
+            db.close();
+        }
     }
 
-    public void deleteSession(final long id) {
+    public Status deleteSession(final long id) {
         final SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(SESSION_TABLE, SESSION_COLUMN_ID + " = ?",
-                new String[]{String.valueOf(id)});
-        db.close();
+        try {
+            db.delete(SESSION_TABLE, SESSION_COLUMN_ID + " = ?",
+                    new String[]{String.valueOf(id)});
+            return Status.SUCCESS;
+        } catch (SQLiteException e) {
+            return Status.FAIL;
+        } finally {
+            db.close();
+        }
     }
 
     public Session getSession(final long id) {

@@ -7,23 +7,18 @@ import android.os.Parcelable;
  * Created by Andrew on 10/7/2015.
  * used http://www.parcelabler.com/ to make this class parcelable
  */
-public class Person implements Parcelable {
+public class Player implements Parcelable {
 
-    private long id;
     private String name;
     private int skill;
-    private long groupId;
+    private String groupId;
 
-    public Person ( final long id, final String name, final int skill, final long groupId){
-        this.id = id;
+    public Player(final String name, final int skill, final String groupId){
         this.name = name;
         this.skill = skill;
         this.groupId = groupId;
     }
 
-    public long getId() {
-        return id;
-    }
 
     public String getName() {
         return name;
@@ -41,19 +36,21 @@ public class Person implements Parcelable {
         this.skill = skill;
     }
 
-    public long getGroupId() {
+    public String getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(long groupId) {
+    public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
-
-    protected Person(Parcel in) {
-        id = in.readLong();
+    public String toString()
+    {
+        return getName();
+    }
+    protected Player(Parcel in) {
         name = in.readString();
         skill = in.readInt();
-        groupId = in.readLong();
+        groupId = in.readString();
     }
 
     @Override
@@ -64,22 +61,21 @@ public class Person implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
 
-        dest.writeLong(id);
         dest.writeString(name);
         dest.writeInt(skill);
-        dest.writeLong(groupId);
+        dest.writeString(groupId);
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Person> CREATOR = new Parcelable.Creator<Person>() {
+    public static final Parcelable.Creator<Player> CREATOR = new Parcelable.Creator<Player>() {
         @Override
-        public Person createFromParcel(Parcel in) {
-            return new Person(in);
+        public Player createFromParcel(Parcel in) {
+            return new Player(in);
         }
 
         @Override
-        public Person[] newArray(int size) {
-            return new Person[size];
+        public Player[] newArray(int size) {
+            return new Player[size];
         }
     };
 }

@@ -10,18 +10,12 @@ import java.util.List;
  * Created by Andrew on 10/7/2015.
  */
 public class Group implements Parcelable {
-    protected long id;
     protected String name;
-    protected List<Person> personList;
+    protected List<Player> playerList;
 
-    public Group(final long id, final String name, final List<Person> personList) {
-        this.id = id;
+    public Group(final String name, final List<Player> playerList) {
         this.name = name;
-        this.personList = personList;
-    }
-
-    public long getId() {
-        return id;
+        this.playerList = playerList;
     }
 
     public String getName() {
@@ -32,27 +26,31 @@ public class Group implements Parcelable {
         this.name = name;
     }
 
-    public List<Person> getPersonList() {
-        return personList;
+    public String toString() {
+        return getName();
     }
 
-    public void setPersonList(List<Person> personList) {
-        this.personList = personList;
+    public List<Player> getPlayerList() {
+        return playerList;
     }
 
-    public boolean addPerson(final Person personToAdd) {
-        for (final Person person : personList) {
-            if (person.getId() == personToAdd.getId())
+    public void setPlayerList(List<Player> playerList) {
+        this.playerList = playerList;
+    }
+
+    public boolean addPlayer(final Player playerToAdd) {
+        for (final Player player : playerList) {
+            if (player.getName() == playerToAdd.getName())
                 return false;
         }
-        personList.add(personToAdd);
+        playerList.add(playerToAdd);
         return true;
     }
 
-    public boolean removePerson(final Person personToRemove) {
-        for (int i = personList.size() - 1; i >= 0; i--) {
-            if (personList.get(i).getId() == personToRemove.getId()) {
-                personList.remove(i);
+    public boolean removePlayer(final Player playerToRemove) {
+        for (int i = playerList.size() - 1; i >= 0; i--) {
+            if (playerList.get(i).getName() == playerToRemove.getName()) {
+                playerList.remove(i);
                 return true;
             }
         }
@@ -63,10 +61,10 @@ public class Group implements Parcelable {
     protected Group(Parcel in) {
         name = in.readString();
         if (in.readByte() == 0x01) {
-            personList = new ArrayList<Person>();
-            in.readList(personList, Person.class.getClassLoader());
+            playerList = new ArrayList<>();
+            in.readList(playerList, Player.class.getClassLoader());
         } else {
-            personList = null;
+            playerList = null;
         }
     }
 
@@ -78,11 +76,11 @@ public class Group implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
-        if (personList == null) {
+        if (playerList == null) {
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
-            dest.writeList(personList);
+            dest.writeList(playerList);
         }
     }
 

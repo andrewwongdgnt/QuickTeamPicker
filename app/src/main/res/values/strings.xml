@@ -16,8 +16,16 @@
 
     <!-- Manage -->
     <string name="title_activity_manage_players">Manage Players</string>
+    <string name="noPlayersMsg">You have no players</string>
+    <string name="addPlayerTitle">Add a player</string>
+    <string name="playerHint">Player name</string>
+    <string name="playerSkillHint">0-100</string>
+    <string name="groupHint">Of group (optional)</string>
+    <string name="playerNameEmptyErrorMsg">Player name cannot be empty</string>
+    <string name="defaultGroupName">Main</string>
+    <string name="duplicatePlayerName">%1$s already exists</string>
 
-
+    <!-- Load -->
     <string name="title_activity_load_session">Load a session</string>
     <string name="emptySession_msg">No sessions found.</string>
 
@@ -28,4 +36,10 @@
 Ever wanted to play a game with your group of friends but can never decide how to split yourselves up into teams? Quick Team Picker strives to take away that hassle by dividing your group of friends into teams for you\n\n
 Now I know what you\'re thinking, &quot;I have lots of friends and I don\'t want to add all their names into the app just to play a quick game.&quot; </string>
 
+    <!-- General -->
+    <string name="add">Add</string>
+    <string name="addAndContinue">Add &amp; Cont</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="unexpectedErrorMsg">An unexpected error has occurred</string>
 </resources>

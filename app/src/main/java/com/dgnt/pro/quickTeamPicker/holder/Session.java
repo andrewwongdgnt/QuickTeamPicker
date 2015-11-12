@@ -70,23 +70,21 @@ public class Session {
             for (final Team team : teamList) {
 
                 final JSONObject object = new JSONObject();
-                object.put("id", team.getId());
                 object.put("name", team.getName());
 
-                final JSONArray personJsonArray = new JSONArray();
+                final JSONArray playerJsonArray = new JSONArray();
 
-                for (final Person person : team.getPersonList()) {
+                for (final Player player : team.getPlayerList()) {
 
-                    final JSONObject personJsonObject = new JSONObject();
-                    personJsonObject.put("id", person.getId());
-                    personJsonObject.put("name", person.getName());
-                    personJsonObject.put("skill", person.getSkill());
-                    personJsonObject.put("groupId", person.getGroupId());
+                    final JSONObject playerJsonObject = new JSONObject();
+                    playerJsonObject.put("name", player.getName());
+                    playerJsonObject.put("skill", player.getSkill());
+                    playerJsonObject.put("groupId", player.getGroupId());
 
-                    personJsonArray.put(object);
+                    playerJsonArray.put(object);
                 }
 
-                object.put("personList", personJsonArray);
+                object.put("playerList", playerJsonArray);
 
                 jsonArray.put(object);
 
@@ -110,24 +108,22 @@ public class Session {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject object = jsonArray.getJSONObject(i);
                 // Pulling items from the array
-                final long id = object.getLong("id");
                 final String name = object.getString("name");
 
-                final JSONArray personJsonArray = object.getJSONArray("personList");
-                final List<Person> personList = new ArrayList<>();
+                final JSONArray playerJsonArray = object.getJSONArray("playerList");
+                final List<Player> playerList = new ArrayList<>();
 
-                for (int j = 0; j < personJsonArray.length(); j++) {
-                    JSONObject personJsonObject = jsonArray.getJSONObject(j);
+                for (int j = 0; j < playerJsonArray.length(); j++) {
+                    JSONObject playerJsonObject = jsonArray.getJSONObject(j);
                     // Pulling items from the array
-                    final long personId = personJsonObject.getLong("id");
-                    final String personName = personJsonObject.getString("name");
-                    final int personSkill = personJsonObject.getInt("skill");
-                    final long personGroupId = personJsonObject.getLong("groupId");
+                    final String playerName = playerJsonObject.getString("name");
+                    final int playerSkill = playerJsonObject.getInt("skill");
+                    final String playerGroupId = playerJsonObject.getString("groupId");
 
-                    personList.add(new Person(personId, personName, personSkill, personGroupId));
+                    playerList.add(new Player(playerName, playerSkill, playerGroupId));
                 }
 
-                teamList.add(new Team(id, name, personList));
+                teamList.add(new Team(name, playerList));
             }
             return teamList;
 
